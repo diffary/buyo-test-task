@@ -3,6 +3,30 @@ from app.utils.enums import COMPLETED_STATUSES, PREORDER_STATUSES, UNPROCESSED_S
 from app.utils.misc import get_order_site_type, get_insight_site_type, get_offer_percentage_rate, normalize_offer_id
 
 
+def calculate_price_indicators(spend: float, approves_count: int, avg_check_usd: float, kpi_percentage: float) -> dict:
+    """
+    price_fact — фактическая цена апрува (спенд / апрувы), None если апрувов нет;
+    price_max — максимально допустимая цена апрува (сред. чек $ * KPI оффера, по умолчанию 25%);
+    minus — перерасход: (max - fact) * апрувы, если fact превышает max;
+            если апрувов нет, но есть спенд — в минус попадает весь спенд.
+    """
+    price_max = avg_check_usd * kpi_percentage
+
+    if approves_count:
+        price_fact = spend / approves_count
+        minus = (price_max - price_fact) * approves_count if price_fact > price_max else 0
+
+    else:
+        price_fact = None
+        minus = -spend if spend else 0
+
+    return {
+        "price_fact": price_fact,
+        "price_max": price_max,
+        "minus": minus,
+    }
+
+
 async def orders_stats(result: dict, orders: list[Order], name: str, trello_data: dict, inventories_data: dict, approve_statuses: list):
     for order in orders:
         is_approve = True if order.status in approve_statuses else False
@@ -465,6 +489,15 @@ async def generate_offers_data(
                         if period == 'first':
                             model[period]['usd_median'] = model[period]["approves_median"] * 1000 * sum_usd_rate
 
+                model["first"].update(
+                    calculate_price_indicators(
+                        spend=model["first"]["spend"],
+                        approves_count=model["first"]["approves_count"],
+                        avg_check_usd=model["first"]["usd_median"],
+                        kpi_percentage=offer_kpi_percentage,
+                    )
+                )
+
                 model["marks"], offer_data_marks = [], offers_data.get(normalized_offer_id, {}).get('marks', [])
 
                 if offer_kpi_percentage != 0.25:
@@ -675,6 +708,15 @@ async def generate_offers_data(
 
                         if period == 'first':
                             model[period]['usd_median'] = 0
+
+                    model["first"].update(
+                        calculate_price_indicators(
+                            spend=model["first"]["spend"],
+                            approves_count=model["first"]["approves_count"],
+                            avg_check_usd=model["first"]["usd_median"],
+                            kpi_percentage=offer_kpi_percentage,
+                        )
+                    )
 
                     if model["first"]["spend"] or model["first"]["all_count"]:
                         result_model.append(model)
