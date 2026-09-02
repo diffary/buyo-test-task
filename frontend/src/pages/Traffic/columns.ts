@@ -25,4 +25,6 @@ export const trafficColumns = [
   { key: "first.lead_price", label: "За лид", color: '#d4ecff', sortable: true, align: "left", hideable: true },
   { key: "campaigns", label: "Актив.", color: '#d4ecff', sortable: true, align: "left", hideable: true },
   { key: "first.usd_median", label: "Сред. чек $", color: '#ecdcff', sortable: true, align: "right", hideable: true  },
+  { key: "first.price_fact", label: "Цена fact-max", color: '#ecdcff', sortable: true, align: "left", hideable: true, width: 210 },
+  { key: "first.minus", label: "Минус", color: '#ecdcff', sortable: true, align: "right", hideable: true },
 ];

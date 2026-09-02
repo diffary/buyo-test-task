@@ -21,11 +21,12 @@ import {useAppDispatch, useAppSelector} from "../../utils/store/hooks.ts";
 import {getOffersTraffic} from "../../utils/API/offersAPI.ts";
 import TrafficRow from "./TrafficRow/TrafficRow.tsx";
 import FiltersPopover from "./FiltersPopover/FiltersPopover.tsx";
+import PriceFactMax from "./PriceFactMax/PriceFactMax.tsx";
 import DateRangeSelector from "../../components/DateRangeSelector/DateRangeSelector.tsx";
 import {trafficColumns} from "./columns.ts";
 import { useSort } from "../../utils/hooks/useSort.tsx";
 import getValueByPath from "../../utils/getValueByPath.ts";
-import {round, safeAvg, safePercentage} from "../../utils/math.ts";
+import {renderMinus, round, safeAvg, safePercentage} from "../../utils/math.ts";
 import {toggleValue} from "../../utils/toggleValue.ts";
 import usePersistToLocalStorage from "../../utils/hooks/usePersistToLocalStorage.tsx";
 
@@ -183,6 +184,8 @@ const Traffic = () => {
         acc.campaigns += row.campaigns;
         acc.usd_median += row.first.usd_median;
         acc.link_clicks += row.first.link_clicks;
+        acc.minus += row.first.minus || 0;
+        acc.price_max_weighted += (row.first.price_max || 0) * row.first.approves_count;
         if (row.first.cr_percentage > 0 && row.first.cr_percentage <= 20) {
           acc.cr_percentage += row.first.cr_percentage
           acc.cr_percentage_count += 1
@@ -195,7 +198,7 @@ const Traffic = () => {
       {
         all_count: 0, clean_count: 0, approves_count: 0, trash_count: 0, approves_sum: 0, unprocessed_count: 0, preorder_count: 0,
         completed_count: 0, link_clicks: 0, spend: 0, conversion: 0, campaigns: 0, usd_median: 0,
-        cr_percentage: 0, cr_percentage_count: 0
+        cr_percentage: 0, cr_percentage_count: 0, minus: 0, price_max_weighted: 0
       }
     );
 
@@ -214,6 +217,10 @@ const Traffic = () => {
       usd_median: round(approves_median * 1000 * exchangeRate),
       spend: round(result.spend),
       lead_price: result.conversion > 0 ? round(result.spend / result.conversion) : 0,
+      price_fact: result.approves_count > 0 ? result.spend / result.approves_count : null,
+      // взвешенное по апрувам среднее max-цены строк (у офферов разный KPI-процент)
+      price_max: result.approves_count > 0 ? result.price_max_weighted / result.approves_count : 0,
+      minus: result.minus,
     };
   }, [displayedData]);
 
@@ -478,6 +485,12 @@ const Traffic = () => {
                   {visibleColumns.includes("first.lead_price") && <TableCell>{summary.lead_price}$</TableCell>}
                   {visibleColumns.includes("campaigns") && <TableCell>{summary.campaigns}</TableCell>}
                   {visibleColumns.includes("first.usd_median") && <TableCell align="right">{summary.usd_median}$</TableCell>}
+                  {visibleColumns.includes("first.price_fact") && (
+                    <TableCell>
+                      <PriceFactMax fact={summary.price_fact} max={summary.price_max} spend={summary.spend} />
+                    </TableCell>
+                  )}
+                  {visibleColumns.includes("first.minus") && <TableCell align="right">{renderMinus(summary.minus)}</TableCell>}
                 </TableRow>
               </TableFooter>
             </Table>
