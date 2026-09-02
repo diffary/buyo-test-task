@@ -1,0 +1,117 @@
+
+.login-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.login-container {
+  width: 100%;
+  height: 100vh;
+  padding: 0 !important;
+
+  @media (min-width: 1280px) {
+    height: auto;
+    max-width: 30%;
+  }
+
+  @media (min-width: 1536px) {
+    max-width: 25%;
+  }
+
+  @media (min-width: 1920px) {
+    max-width: 20%;
+  }
+}
+
+.login-card {
+  width: 100%;
+  height: 100vh;
+  background-color: #fff;
+  border-radius: .5rem !important;
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px;
+  gap: 2rem;
+
+  @media (min-width: 1280px) {
+    height: auto;
+    padding-top: 28px;
+  }
+
+  @media (max-width: 1279px) {
+    padding-top: 80px;
+  }
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-image {
+  max-height: 80px;
+}
+
+.login-inputs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-field {
+  .MuiOutlinedInput-root {
+    border-radius: 8px;
+    gap: 0.5rem;
+
+    input::placeholder {
+      font-weight: bold;
+      color: #6c6767;
+    }
+
+    input {
+      padding: 12px 0;
+    }
+
+    .MuiInputAdornment-root {
+      display: flex;
+      align-items: center;
+      padding-left: 2px;
+
+      svg {
+        font-size: 1rem;
+        color: black;
+      }
+    }
+
+    &.Mui-focused fieldset {
+      border-color: black;
+      border-width: 2px;
+    }
+  }
+}
+
+
+.login-button {
+  background-color: #22c55e !important;
+  color: #fff !important;
+  font-weight: bold !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  padding: 10px !important;
+
+  &:hover {
+    background-color: #16a34a;
+  }
+}

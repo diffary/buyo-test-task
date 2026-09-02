@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.white { background-color: #fff; }
+.default { background-color: #fffedc; }
+.orange { background-color: #ffebdc; }
+.brown { background-color: #ffefdc; }
+.light-grey { background-color: #f6f6f6; }
+.green { background-color: #dcffdc; }
+.bright-green { background-color: #e5ffe4; }
+.blue { background-color: #d4ecff; }
+.purple { background-color: #ecdcff; }
+.red { background-color: #ffe7e7; }
+.selected { background-color: #bfe2ff; }
+
+.row-checkbox {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 16px;
+  height: 16px;
+
+  .MuiSvgIcon-root {
+    font-size: 18px;
+  }
+}
+
+.stickyLeft {
+  position: sticky;
+  z-index: 1;
+}
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+  position: absolute !important;
+}
+
